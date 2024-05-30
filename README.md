@@ -8,6 +8,12 @@
 * `data` - all raw data files
 * `output` - all manipulated data files
 
+---
+
+## [Setting up Your Computer](https://github.com/tamucc-comp-bio/how_to)
+
+---
+
 ## How to manage your data
 
 * [tidy data](https://vita.had.co.nz/papers/tidy-data.pdf)
