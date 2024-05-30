@@ -12,6 +12,9 @@
 
 ## [Setting up Your Computer](https://github.com/tamucc-comp-bio/how_to)
 
+## [Instructions for ODU On Demand HPC access](https://wiki.hpc.odu.edu/en/open-ondemand)
+
+
 ---
 
 ## How to manage your data
