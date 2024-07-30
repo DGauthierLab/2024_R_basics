@@ -1,0 +1,130 @@
+---
+title: "Basic_Statistics"
+output: html_document
+date: "2024-07-30"
+---
+
+```{r setup, include=FALSE}
+if (!require('tidyverse')) install.packages('tidyverse')
+if (!require('ggplot2')) install.packages('ggplot2')
+
+library(tidyverse)
+library(ggplot2)
+library(pwr)
+library(car)
+library(MASS)
+library(lmtest)
+library(tseries)
+library(ggfortify)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+getwd()
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r The Lady Tasting Tea}
+
+# Create vector of 0-4 sucesses
+x_dhyper <- seq(0, 4, by = 1)
+
+# Apply dhyper function
+# m = number of "successes" (milk-first)
+# n = number of "failures" (tea-first)
+# k = number of "draws" (choice of teacups prepared milk-first)
+
+y_dhyper <- dhyper(x_dhyper, m = 4, n = 4, k = 4)   
+
+# Make a dataframe
+hg_df <- tibble(x_dhyper,y_dhyper)
+hg_df
+
+## Plot dhyper values
+
+# basic plot
+hypergeometric <- hg_df |>
+  ggplot(aes(x = x_dhyper, y = y_dhyper)
+         ) +
+           geom_point()
+hypergeometric
+
+# barplot
+hypergeometric <- hg_df |>
+  ggplot(aes(x = x_dhyper, y = y_dhyper)
+  ) +
+  geom_bar(stat = "identity")
+hypergeometric
+
+#better barplot
+hypergeometric <- hg_df |>
+  ggplot(aes(x = x_dhyper, y = y_dhyper)
+  ) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = 0.05, linetype = "dashed", color = "red") +
+  labs(
+    title = "Hypergeometric Distribution of 4 trials",
+    subtitle = "Dashed line indicates 0.05 probability level"
+  ) +
+  xlab("Successes") +
+  ylab("Probability") +
+  theme_classic()
+hypergeometric
+```
+```{r Normal distribution and t-test}
+#Create a sequence of 100 equally spaced numbers between -4 and 4
+x <- seq(-4, 4, length=100)
+
+#create a vector of values that shows the height of the probability distribution
+#for each value in x
+y <- dnorm(x, mean = 0, sd = 1)
+
+#plot x and y
+
+norm_df <- tibble(x,y)
+
+norm_dist <- norm_df |>
+  ggplot(
+    aes(x=x, y=y)
+  ) +
+  geom_line() +
+  geom_hline(yintercept = 0.05, linetype = "dashed", color = "red") +
+  scale_x_continuous(name = "",
+                     breaks = c(-3, -2, -1, 0, 1, 2, 3), 
+                     labels = paste0(seq(-3,3,1), "\u03c3")
+                     ) +
+  theme_bw()
+norm_dist
+
+#generate a tibble of normally distributed tick weights (2 populations)
+tick_df <- tibble(
+  pop1 = rnorm(100,18.2,1),
+  pop2 = rnorm(100,20.2,2)
+)
+
+#tick_df isn't tidy...
+
+tickwts <- tick_df |> 
+  pivot_longer(
+    everything(),
+    names_to = "population",
+    values_to = "weight_mg"
+  ) |>
+  mutate(population = case_when(population == "pop1" ~ "1",
+                                population == "pop2" ~ "2")
+         ) |>
+  arrange(population)
+
+#box and scatter plots of population weights
+
+tickplot <- tickwts |>
+  ggplot(aes(x=population,
+             y=weight_mg)) +
+  geom_point(size = 2) 
+tickplot
+
+tickplot <- tickwts |>
+  ggplot(aes(x=population,
+             y=weight_mg)) +
+  geom_boxplot()
+tickplot
+
+```
