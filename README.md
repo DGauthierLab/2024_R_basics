@@ -10,7 +10,7 @@
 
 ---
 
-## [Setting up Your Computer](https://github.com/tamucc-comp-bio/how_to)
+## [Setting up Your Computer](https://github.com/DGauthierLab/how_to.git)
 
 ## [Instructions for ODU On Demand HPC access](https://wiki.hpc.odu.edu/en/open-ondemand)
 
