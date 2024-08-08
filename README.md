@@ -1,4 +1,4 @@
-# 2024_LastName_ProjName
+# 2024_R_Data_Analysis_Seminar
 
 ---
 
