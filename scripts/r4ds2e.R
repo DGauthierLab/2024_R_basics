@@ -32,7 +32,7 @@ library(readxl)
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 getwd()
 
-####Ultrabasics####
+####Basics####
 
 #The four panes: Script/Environment/File/Console
 #Relationship between script and console panes
