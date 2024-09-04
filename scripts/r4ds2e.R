@@ -37,6 +37,7 @@ getwd()
 #The four panes: Script/Environment/File/Console
 #Relationship between script and console panes
 #enter 1+1 in console pane below
+#next, run the next line
 1+1
 
 #line numbers
