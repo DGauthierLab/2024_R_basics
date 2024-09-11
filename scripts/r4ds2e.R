@@ -123,7 +123,7 @@ planes |>
   count(tailnum) |> 
   filter(n > 1)
 
-#compare with:
+#compare with the unpiped version:
 
 df <- count(planes, tailnum)
   filter(df, n > 1)
