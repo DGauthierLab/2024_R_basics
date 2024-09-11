@@ -74,6 +74,135 @@ round(3.1415, digits = 2) #two arguments, separated by comma
 pi rounded <- round(3.1415, digits = 2)
 pi_rounded <- round(3.1415, digits = 2)
 
+####Section 7: Data import####
+#note the path here.  your working directory should be scripts, so your data is up one (..), then down one to data
+#The (..) convention means "up one directory" and is a relative path
+
+heights <- read_csv("../data/heights.csv")
+
+#reading an individual .xlsx sheet with read_excel
+#The "import dataset" wizard in the environment pane is a handy cheat for this.
+
+penguins_Torgerson <- read_excel("../data/penguins.xlsx", 
+                                 sheet = "Torgersen Island", #note we don't have to use snake case.  Why?
+                                 col_types = c("text", "text", "numeric", "numeric", "numeric", 
+                                               "numeric", "text", "numeric"))
+View(penguins_Torgerson)
+
+#read in the other sheets in penguins.xlsx
+
+penguins_Biscoe <- read_excel("../data/penguins.xlsx", 
+                              sheet = "Biscoe Island", 
+                              col_types = c("text", "text", "numeric", "numeric", "numeric", 
+                                            "numeric", "text", "numeric"))
+View(penguins_Biscoe)
+
+penguins_Dream <- read_excel("../data/penguins.xlsx", 
+                             sheet = "Dream Island", 
+                             col_types = c("text", "text", "numeric", "numeric", "numeric", 
+                                           "numeric", "text", "numeric"))
+View(penguins_Dream)
+
+####Section 19: Joins####
+
+#data frames for joining
+airlines
+airports
+planes 
+weather
+
+#checking whether primary keys for each table are good (uniquely identify each record)
+#This is the first time you've seen a pipe (|>) in this class
+#also functions count() and filter()
+
+planes |> 
+  count(tailnum) |> 
+  filter(n > 1)
+
+#compare with:
+
+df <- count(planes, tailnum)
+  filter(df, n > 1)
+
+weather |> 
+  count(time_hour, origin) |> 
+  filter(n > 1)
+
+#also should examine your keys for missing values 
+planes |> 
+  filter(is.na(tailnum))
+
+weather |> 
+  filter(is.na(time_hour) | is.na(origin))
+
+#mutating joins
+#introducing select() here
+
+flights2 <- flights |> 
+  select(year, time_hour, origin, dest, tailnum, carrier)
+flights2
+
+#left join is the most commonly used form of mutating join.  It is often used to add metadata to a data frame
+#what is the key here?
+
+flights2 |>
+  left_join(airlines)
+
+flights2 |> 
+  left_join(weather |> select(origin, time_hour, temp, wind_speed))
+
+#issues with joining: columns mean different things in the joined tables
+
+flights2 |> 
+  left_join(planes)
+
+#solution is to re-specify a key that means the same thing in both tables to be joined
+
+flights2 |> 
+  left_join(planes, join_by(tailnum))
+
+#can also join based on keys with different names, provided the same values are present 
+
+flights2 |> 
+  left_join(airports, join_by(dest == faa))
+
+#Let's join our three penguins data frames
+
+#this isn't what we want
+penguins2 <- left_join(penguins_Biscoe, penguins_Torgerson) |>
+  left_join(penguins_Dream)
+View(penguins2)
+
+#use rbind instead
+penguins3 <- rbind(penguins_Biscoe, penguins_Dream, penguins_Torgerson)
+View(penguins3)
+
+#look at NAs in dataframe
+penguins3 |>
+  filter(if_any(everything(), is.na))
+
+#careful.  There are also "NA" strings in dataframe
+penguins3 |>
+  filter(if_any(everything(), ~stringr::str_detect(., "NA")))
+
+#let's convert those "NA" strings
+penguins4 <- penguins3 |>
+  mutate(across(where(is.character), ~na_if(., "NA")))
+
+#Check to see if it worked
+penguins4 |>
+  filter(if_any(everything(), ~stringr::str_detect(., "NA")))
+
+#This can also be done at the data import step like so: 
+penguins_Torgerson <- read_excel("../data/penguins.xlsx", 
+                                 sheet = "Torgersen Island", #note we don't have to use snake case.  Why?
+                                 col_types = c("text", "text", "numeric", "numeric", "numeric", 
+                                               "numeric", "text", "numeric"),
+                                 na = "NA") #this has been added
+View(penguins_Torgerson)
+####
+
+
 ####Section 1: Data Visualization with ggplot2####
 
 #different ways to visualize data set
@@ -469,129 +598,8 @@ df |>
     values_from = value
   )
 
-####Section 7: Data import####
-#note the path here.  your working directory should be scripts, so your data is up one (..), then down one to data
-#The (..) convention means "up one directory" and is a relative path
 
-heights <- read_csv("../data/heights.csv")
-
-#reading an individual .xlsx sheet with read_excel
-#The "import dataset" wizard in the environment pane is a handy cheat for this.
-
-penguins_Torgerson <- read_excel("../data/penguins.xlsx", 
-                                 sheet = "Torgersen Island", #note we don't have to use snake case.  Why?
-                                 col_types = c("text", "text", "numeric", "numeric", "numeric", 
-                                                "numeric", "text", "numeric"))
-View(penguins_Torgerson)
-
-#read in the other sheets in penguins.xlsx
-
-penguins_Biscoe <- read_excel("../data/penguins.xlsx", 
-                                 sheet = "Biscoe Island", 
-                                 col_types = c("text", "text", "numeric", "numeric", "numeric", 
-                                               "numeric", "text", "numeric"))
-View(penguins_Biscoe)
-
-penguins_Dream <- read_excel("../data/penguins.xlsx", 
-                              sheet = "Dream Island", 
-                              col_types = c("text", "text", "numeric", "numeric", "numeric", 
-                                            "numeric", "text", "numeric"))
-View(penguins_Dream)
-
-####Section 19: Joins
-
-##Joins (Section 19)
-
-#data frames for joining
-airlines
-airports
-planes 
-weather
-
-#checking whether primary keys for each table are good (uniquely identify each record)
-planes |> 
-  count(tailnum) |> 
-  filter(n > 1)
-
-weather |> 
-  count(time_hour, origin) |> 
-  filter(n > 1)
-
-#also should examine your keys for missing values 
-planes |> 
-  filter(is.na(tailnum))
-
-weather |> 
-  filter(is.na(time_hour) | is.na(origin))
-
-#mutating joins
-
-flights2 <- flights |> 
-  select(year, time_hour, origin, dest, tailnum, carrier)
-flights2
-
-#left join is the most commonly used form of mutating join.  It is often used to add metadata to a data frame
-#what is the key here?
-
-flights2 |>
-  left_join(airlines)
-
-flights2 |> 
-  left_join(weather |> select(origin, time_hour, temp, wind_speed))
-
-#issues with joining: columns mean different things in the joined tables
-
-flights2 |> 
-  left_join(planes)
-
-#solution is to re-specify a key that means the same thing in both tables to be joined
-
-flights2 |> 
-  left_join(planes, join_by(tailnum))
-
-#can also join based on keys with different names, provided the same values are present 
-
-flights2 |> 
-  left_join(airports, join_by(dest == faa))
-
-#Let's join our three penguins data frames
-
-#this isn't what we want
-penguins2 <- left_join(penguins_Biscoe, penguins_Torgerson) |>
-  left_join(penguins_Dream)
-View(penguins2)
-
-#use rbind instead
-penguins3 <- rbind(penguins_Biscoe, penguins_Dream, penguins_Torgerson)
-View(penguins3)
-
-#look at NAs in dataframe
-penguins3 |>
-filter(if_any(everything(), is.na))
-
-#careful.  There are also "NA" strings in dataframe
-penguins3 |>
-  filter(if_any(everything(), ~stringr::str_detect(., "NA")))
-
-#let's convert those "NA" strings
-penguins4 <- penguins3 |>
-  mutate(across(where(is.character), ~na_if(., "NA")))
-
-#Check to see if it worked
-penguins4 |>
-  filter(if_any(everything(), ~stringr::str_detect(., "NA")))
-
-#This can also be done at the data import step like so: 
-penguins_Torgerson <- read_excel("../data/penguins.xlsx", 
-                                 sheet = "Torgersen Island", #note we don't have to use snake case.  Why?
-                                 col_types = c("text", "text", "numeric", "numeric", "numeric", 
-                                               "numeric", "text", "numeric"),
-                                 na = "NA") #this has been added
-View(penguins_Torgerson)
-
-
-
-####Regular Expressions (Section 15)
+####Section 15: Regular Expressions####
 
 #literal matches
 str_view(fruit, "berry")
@@ -619,4 +627,4 @@ str_view(fruit, "apple|melon|nut")
 str_view(fruit, "aa|ee|ii|oo|uu")
 
 str_view(fruit, "o{2}")
-
+####
