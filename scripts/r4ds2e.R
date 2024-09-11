@@ -4,6 +4,8 @@
 
 #Hands-On Programming with R is also a good resource: https://rstudio-education.github.io/hopr/
 
+#alt o to collapse
+
 ####Setup Block####
 ##the first block of code in any R script should (minimally) be a setup block that:
 #installs packages
@@ -19,6 +21,8 @@ if (!require('palmerpenguins')) install.packages('palmerpenguins')
 if (!require('nycflights13')) install.packages('nycflights13')
 if (!require('rstudioapi')) install.packages('rstudioapi')
 if (!require('readxl')) install.packages('readxl')
+if (!require('ggthemes')) install.packages('ggthemes')
+if (!require('babynames')) install.packages('babynames')
 
 #library loadings
 library(tidyverse)
@@ -26,6 +30,8 @@ library(palmerpenguins)
 library(rstudioapi)
 library(nycflights13)
 library(readxl)
+library(ggthemes)
+library(babynames)
 
 #setting a working directory
 #following command assumes you have rstudioapi installed/loaded and sets working directory to script directory
@@ -82,8 +88,11 @@ pi_rounded <- round(3.1415, digits = 2)
 
 heights <- read_csv("../data/heights.csv")
 
+View(heights)
+
 #reading an individual .xlsx sheet with read_excel
 #The "import dataset" wizard in the environment pane is a handy cheat for this.
+#.. represents a relative path which goes one up from current working directory (i.e. from data to BIOL708_R_basics)
 
 penguins_Torgerson <- read_excel("../data/penguins.xlsx", 
                                  sheet = "Torgersen Island", #note we don't have to use snake case.  Why?
@@ -109,6 +118,7 @@ View(penguins_Dream)
 
 #data frames for joining
 #where do these data sets come from?
+  #pre-loaded data sets in R
 airlines
 airports
 planes 
@@ -116,15 +126,17 @@ weather
 
 #checking whether primary keys for each table are good (uniquely identify each record)
 #This is the first time you've seen a pipe (|>) in this class
+  #pipe represents "then" meaning get the data and "then" do this with it
 #also functions count() and filter()
 #these are all tidyverse functions, which we'll get to next week in more detail
 
 planes |> 
   count(tailnum) |> 
   filter(n > 1)
+  #there are no tail numbers that occur more than once
 
 #compare with the unpiped version:
-
+  #does the same thing but creates a separate data set in the environment
 df <- count(planes, tailnum)
   filter(df, n > 1)
 
@@ -320,7 +332,7 @@ ggplot(penguins, aes(x = body_mass_g)) +
 
 #geom_density
 ggplot(penguins, aes(x = body_mass_g)) +
-  geom_density() +
+  geom_density() 
 
 #1.4.3 exercises
 
@@ -372,13 +384,15 @@ ggplot(penguins, aes(x = island, fill = species)) +
 #basic plot
 ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point()
+
 #adding mappings for species and island
 ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(aes(color = species, shape = island))
+
 #cleaner way to do this with faceting
 ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(aes(color = species, shape = species)) +
-  facet_grid(~species)
+  facet_grid(island~species)
 
 ####Section 3: Data Transformation####
 
@@ -388,9 +402,11 @@ flights
 #The first tidyverse row function: filter
 
 #filter operates on ROWS
-flights |> 
-  filter(dep_delay > 120)
-
+df <- flights |> 
+  filter(dep_delay >120)
+      
+View(df)
+   
 # Flights that departed on January 1
 flights |> 
   filter(month == 1 & day == 1)
@@ -422,9 +438,8 @@ flights |>
 
 #3.2.3 our next row function: arrange
 #changes order of rows based on column values
-
-var <- flights |> 
-  arrange(dep_delay,year, month, day)
+var <- flights|>
+  arrange(dep_delay, year, month, day)
 
 flights |> 
   arrange(desc(dep_delay))
@@ -486,6 +501,8 @@ flights |>
 
 flights |> 
   select(!year:day)
+
+#! means not/negate
 
 flights |> 
   select(where(is.numeric))
