@@ -77,6 +77,8 @@ pi_rounded <- round(3.1415, digits = 2)
 ####Section 7: Data import####
 #note the path here.  your working directory should be scripts, so your data is up one (..), then down one to data
 #The (..) convention means "up one directory" and is a relative path
+#contrast the relative path "../data/heights.csv" 
+#with the absolute path "/usr/dgauthie/documents/Github/2024_R_seminar/data/heights.csv"
 
 heights <- read_csv("../data/heights.csv")
 
@@ -106,6 +108,7 @@ View(penguins_Dream)
 ####Section 19: Joins####
 
 #data frames for joining
+#where do these data sets come from?
 airlines
 airports
 planes 
@@ -114,6 +117,7 @@ weather
 #checking whether primary keys for each table are good (uniquely identify each record)
 #This is the first time you've seen a pipe (|>) in this class
 #also functions count() and filter()
+#these are all tidyverse functions, which we'll get to next week in more detail
 
 planes |> 
   count(tailnum) |> 
@@ -597,7 +601,6 @@ df |>
     names_from = measurement,
     values_from = value
   )
-
 
 ####Section 15: Regular Expressions####
 
