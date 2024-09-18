@@ -14,6 +14,7 @@
 
 #package installs
 #this syntax checks if a package is installed, installs it if not.
+
 if (!require('tidyverse')) install.packages('tidyverse')
 if (!require('palmerpenguins')) install.packages('palmerpenguins')
 if (!require('nycflights13')) install.packages('nycflights13')
@@ -216,6 +217,7 @@ View(penguins)
 ?penguins
 
 ##creating a ggplot (see 1.2.2)
+#for folks working on the HPC, you will need to select the cairo backend at "Tools" > "Global Options" > "General" > "Graphics" > "Backend"
 
 #empty graph
 ggplot(data = penguins)
