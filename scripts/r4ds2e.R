@@ -20,6 +20,7 @@ if (!require('palmerpenguins')) install.packages('palmerpenguins')
 if (!require('nycflights13')) install.packages('nycflights13')
 if (!require('rstudioapi')) install.packages('rstudioapi')
 if (!require('readxl')) install.packages('readxl')
+if (!require('ggthemes')) install.packages('ggthemes')
 
 #library loadings
 library(tidyverse)
@@ -27,6 +28,7 @@ library(palmerpenguins)
 library(rstudioapi)
 library(nycflights13)
 library(readxl)
+library(ggthemes)
 
 #setting a working directory
 #following command assumes you have rstudioapi installed/loaded and sets working directory to script directory
@@ -247,7 +249,7 @@ ggplot(
   data = penguins,
   mapping = aes(x = flipper_length_mm, y = body_mass_g, color = species)
 ) +
-  geom_point() +
+  geom_point() + 
   geom_smooth(method="lm")
 
 #apply the smoothed line to the entire data set, not to individual species
