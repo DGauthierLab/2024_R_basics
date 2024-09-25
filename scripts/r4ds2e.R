@@ -324,7 +324,7 @@ ggplot(penguins, aes(x = body_mass_g)) +
 
 #geom_density
 ggplot(penguins, aes(x = body_mass_g)) +
-  geom_density() +
+  geom_density() 
 
 #1.4.3 exercises
 
@@ -359,7 +359,7 @@ ggplot(penguins, aes(x = body_mass_g, color = species)) +
 #mapping variable species to both color and fill aesthetics
 #setting fill aesthetic to a value (0.5)
 ggplot(penguins, aes(x = body_mass_g, color = species, fill = species)) +
-  geom_density(alpha = .1)
+  geom_density(alpha = .5)
 
 #stacked barplot
 ggplot(penguins, aes(x = island)) +
@@ -370,7 +370,7 @@ ggplot(penguins, aes(x = island, fill = species)) +
 
 #using position argument to change behavior of stacked barplot
 ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "dodge")
 
 #getting complicated.  Three or more variables
 #basic plot
@@ -382,7 +382,7 @@ ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
 #cleaner way to do this with faceting
 ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(aes(color = species, shape = species)) +
-  facet_grid(~species)
+  facet_grid(species ~ island)
 
 ####Section 3: Data Transformation####
 
