@@ -384,6 +384,17 @@ ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(aes(color = species, shape = species)) +
   facet_grid(species ~ island)
 
+
+##Challenge for 10/2##
+#Use the `diamonds` dataframe from the ggplot2 package.  
+#I want to buy a diamond (I really don't).  
+#Create a script (new file) that will do the following:
+#Make some plots that will give me an idea of what my best value is in terms of color and cut.
+#By value, if I can expect on average to buy a better cut (or color) for the same price/carat as a lesser cut (or color), that is what I am going to shop for.
+#No stats.  Make some plots.
+#GO
+
+
 ####Section 3: Data Transformation####
 
 flights
