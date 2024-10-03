@@ -344,6 +344,8 @@ ggplot(penguins, aes(x = body_mass_g)) +
 #     Experiment with different binwidths. What binwidth reveals the most interesting patterns?
 # 
 
+
+
 ##Section 1.5
 
 #Relationship between numerical and categorical variable with different geoms
@@ -393,6 +395,19 @@ ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
 #By value, if I can expect on average to buy a better cut (or color) for the same price/carat as a lesser cut (or color), that is what I am going to shop for.
 #No stats.  Make some plots.
 #GO
+View(diamonds)
+
+diamonds |>
+  ggplot(aes(x=carat, y=price, color = cut)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_grid(cut~color)
+
+df <- diamonds |>
+  mutate(pricepercarat = price/carat) |>
+  ggplot(aes(x=color, y=pricepercarat)) +
+  geom_boxplot() +
+  facet_grid(~cut)
 
 
 ####Section 3: Data Transformation####
