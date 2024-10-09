@@ -418,15 +418,15 @@ flights
 #The first tidyverse row function: filter
 
 #filter operates on ROWS
-flights |> 
+flights <- flights |> 
   filter(dep_delay > 120)
 
 # Flights that departed on January 1
 flights |> 
-  filter(month == 1 & day == 1)
+  filter(month == 1 & month == 1)
 
 # Flights that departed in January or February
-flights |> 
+df <- flights |> 
   filter(month == 1 | month == 2)
 
 # multiple operations in a pipe
@@ -436,7 +436,7 @@ flights |>
 
 # A shorter way to select flights that departed in January or February
 flights |> 
-  filter(month %in% c(1, 2))
+  filter(month %in% c(1:10))
 
 #saving to an object
 jan1 <- flights |> 
@@ -454,7 +454,7 @@ flights |>
 #changes order of rows based on column values
 
 var <- flights |> 
-  arrange(dep_delay,year, month, day)
+  arrange(month, dep_delay)
 
 flights |> 
   arrange(desc(dep_delay))
@@ -469,6 +469,9 @@ flights |>
 flights |> 
   distinct(origin, dest)
 
+flights |>
+  filter(origin == "EWR" & dest == "IAH")
+
 #as above, keeping all columns
 flights |> 
   distinct(origin, dest, .keep_all = TRUE)
@@ -478,10 +481,10 @@ flights |>
 #mutate (you'll probably use this one more than any other)
 new_flights <- flights |> 
   mutate(
-    gain = dep_delay - arr_delay,
-    speed = distance / air_time * 60,
+    gain = dep_delay - arr_delay, 
+    speed = distance / air_time * 60, 
     .after = day
-  )
+    )
 
 View(new_flights)
 
