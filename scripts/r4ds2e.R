@@ -21,6 +21,8 @@ if (!require('nycflights13')) install.packages('nycflights13')
 if (!require('rstudioapi')) install.packages('rstudioapi')
 if (!require('readxl')) install.packages('readxl')
 if (!require('ggthemes')) install.packages('ggthemes')
+if (!require('readxl')) install.packages('readxl')
+if (!require('babynames')) install.packages('babynames')
 
 #library loadings
 library(tidyverse)
@@ -29,6 +31,7 @@ library(rstudioapi)
 library(nycflights13)
 library(readxl)
 library(ggthemes)
+library(babynames)
 
 #setting a working directory
 #following command assumes you have rstudioapi installed/loaded and sets working directory to script directory
@@ -656,6 +659,13 @@ str_view(c("a", "ab", "abb"), "ab+")
 
 str_view(c("a", "ab", "abb"), "ab*")
 
+#more quantifiers ({})
+
+str_view(c("a", "ab", "abb"), "ab{1}")
+str_view(c("a", "ab", "abb"), "ab{2}")
+
+str_view(c("a", "ab", "abb", "aabb", "aaabb", "aaaabb"), "a{2,3}b")
+
 #character classes ([])
 
 str_view(words, "[aeiou]x[aeiou]")
@@ -669,4 +679,90 @@ str_view(fruit, "apple|melon|nut")
 str_view(fruit, "aa|ee|ii|oo|uu")
 
 str_view(fruit, "o{2}")
+
+##str_detect
+str_detect(c("a", "b", "c"), "[aeiou]")
+
+babynames |> 
+  filter(str_detect(name, "x")) |> 
+  count(name, wt = n, sort = TRUE)
+
+babynames |> 
+  group_by(year) |> 
+  summarize(prop_x = mean(str_detect(name, "x"))) |> 
+  ggplot(aes(x = year, y = prop_x)) + 
+  geom_line()
+
+#escaping
+# To create the regular expression \., we need to use \\.
+dot <- "\\."
+
+# But the expression itself only contains one \
+str_view(dot)
+
+
+# And this tells R to look for an explicit .
+str_view(c("abc", "a.c", "bef"), "a\\.c")
+
+#anchors
+str_view(fruit, "^a")
+#> [1] │ <a>pple
+#> [2] │ <a>pricot
+#> [3] │ <a>vocado
+str_view(fruit, "a$")
+#>  [4] │ banan<a>
+#> [15] │ cherimoy<a>
+#> [30] │ feijo<a>
+#> [36] │ guav<a>
+#> [56] │ papay<a>
+#> [74] │ satsum<a>
+
+#grouping and capturing backreferences
+str_view(fruit, "(..)\\1")
+
+str_view(words, "^(..).*\\1$")
+
+#string replace and backreferences
+
+sentences |> 
+  str_replace("(\\w+) (\\w+) (\\w+)", "\\1 \\3 \\2") |> 
+  str_view()
+
+#finding exact matches
+
+sentences |> 
+  str_match("the (\\w+) (\\w+)") |> 
+  head()
+
+#non-capturing matches
+x <- c("a gray cat", "a grey dog")
+str_match(x, "gr(e|a)y")
+str_match(x, "gr(?:e|a)y")
+
+
+#a bit cleaner version with separate_wider_regex
+df <- tribble(
+  ~str,
+  "<Sheryl>-F_34",
+  "<Kisha>-F_45", 
+  "<Brandon>-N_33",
+  "<Sharon>-F_38", 
+  "<Penny>-F_58",
+  "<Justin>-M_41", 
+  "<Patricia>-F_84", 
+)
+df |> 
+  separate_wider_regex(
+    str,
+    patterns = c(
+      "<", 
+      name = "[A-Za-z]+", 
+      ">-", 
+      gender = ".",
+      "_",
+      age = "[0-9]+"
+    )
+  )
+
+str_match(df[,1],"<([A-Za-z]+)>-(.)_([0-9]+)")
 ####
