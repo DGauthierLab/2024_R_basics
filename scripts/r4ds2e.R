@@ -515,7 +515,7 @@ flights |>
   select(year, month, day)
 
 flights |> 
-  select(year:day)
+  select(year:flight)
 
 flights |> 
   select(!year:day)
@@ -526,7 +526,7 @@ flights |>
 #one way to rename a column
 #note syntax is select(new_name = old_name)
 new_flights <- flights |> 
-  select(tail_num = tailnum)
+  select(dep_time, everything())
 
 #rename can also be used for this
 new_flights <- flights |> 
@@ -577,6 +577,12 @@ daily
 
 daily_flights <- daily |> 
   summarize(n = n())
+daily_flights
+
+daily |> 
+  filter(!if_any(everything(), is.na)) |>
+  summarize(n = n())
+
 
 ####Section 5: Data tidying and pivoting####
 
