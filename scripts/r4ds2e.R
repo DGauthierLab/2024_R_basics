@@ -421,8 +421,6 @@ flights |>
   filter(month == 1 & day == 1)
 
 # A shorter way to select flights that departed in January or February
-flights |> 
-  filter(month %in% c(1, 2))
 
 #saving to an object
 jan1 <- flights |> 
