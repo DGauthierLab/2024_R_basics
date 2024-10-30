@@ -678,7 +678,7 @@ str_view(words, "[^aeiou]y[^aeiou]")
 str_view(fruit, "apple|melon|nut")
 str_view(fruit, "aa|ee|ii|oo|uu")
 
-str_view(fruit, "o{2}")
+str_view(fruit, "o{2,}")
 
 ##str_detect
 str_detect(c("a", "b", "c"), "[aeiou]")
@@ -766,3 +766,4 @@ df |>
 
 str_match(df[,1],"<([A-Za-z]+)>-(.)_([0-9]+)")
 ####
+
