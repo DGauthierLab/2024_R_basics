@@ -26,3 +26,13 @@ getwd()
 
 knitr::opts_chunk$set(echo = TRUE)
 ```
+```{r data import}
+data <- read_excel("../data/Copy of MW_Biosolid_PILOT_22March2024.xlsx", 
+    sheet = "MW3_Biosolid_PILOT_22March2024", 
+    col_types = c("date", "numeric", "numeric", 
+        "text", "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "text", "numeric", 
+        "numeric", "text", "text", "text", 
+        "numeric", "numeric", "numeric"))
+```
+
