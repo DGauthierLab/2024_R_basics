@@ -67,7 +67,6 @@ hb_data_wrangled |>
   filter(if_any(everything(), ~stringr::str_detect(., "NA")))
 
 ```
-
 ```{r body region histogram}
 hb_data_wrangled |>
   filter(!is.na(new_body_site)) |>
@@ -82,7 +81,6 @@ hb_data_wrangled |>
   geom_tile() 
 
 ```
-
 ```{r heatmap}
 df <- hb_data_wrangled |>
   group_by(new_body_site) |>
@@ -108,18 +106,39 @@ df3 |>
 ```
 ```{r contingency table}
 
-ctable <- hb_data_wrangled |>
+contab <- function(x){
+  hb_data_wrangled |>
   filter(!is.na(species_name), !is.na(new_body_site)) |>
+  filter(new_life_stage %in% {{x}}) |>
   group_by(species_name,new_body_site)|>
   summarize(count = n()) |>
   pivot_wider(names_from = species_name, values_from = count, values_fill = list(count=0)) |>
   column_to_rownames(var = "new_body_site")
+}
+
+
+ctable_all <- contab(life_stage_name) |>
+  chisq.test()
+ctable_all
+library(corrplot)
+corrplot(ctable_all$residuals, is.cor = FALSE)
+
+ctable_adult <- contab(c("Nymph")) |>
+  chisq.test()
+ctable_adult
+library(corrplot)
+corrplot(ctable_adult$residuals, is.cor = FALSE)
+
+ctable_juv <- contab(c("Nymph","Larva")) |>
+  chisq.test()
+ctable_adult
+library(corrplot)
+corrplot(ctable_adult$residuals, is.cor = FALSE)
 
 chisq <- chisq.test(ctable)
 chisq
 
-library(corrplot)
-corrplot(chisq$residuals, is.cor = FALSE)
+
 
 contrib <- 100*chisq$residuals^2/chisq$statistic
 round(contrib, 3)

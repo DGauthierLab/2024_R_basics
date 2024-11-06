@@ -666,6 +666,8 @@ str_view(c("a", "ab", "abb"), "ab{2}")
 
 str_view(c("a", "ab", "abb", "aabb", "aaabb", "aaaabb"), "a{2,3}b")
 
+str_view(c("a", "ab", "abb", "aabb", "aaabb", "aaaabb", "ab+"), "ab\\+")
+
 #character classes ([])
 
 str_view(words, "[aeiou]x[aeiou]")
@@ -702,14 +704,14 @@ str_view(dot)
 
 
 # And this tells R to look for an explicit .
-str_view(c("abc", "a.c", "bef"), "a\\.c")
+str_view(c("abc", "a.c", "bef"), "a.c")
 
 #anchors
 str_view(fruit, "^a")
 #> [1] │ <a>pple
 #> [2] │ <a>pricot
 #> [3] │ <a>vocado
-str_view(fruit, "a$")
+str_view(fruit, "^a.*o$")
 #>  [4] │ banan<a>
 #> [15] │ cherimoy<a>
 #> [30] │ feijo<a>
@@ -764,6 +766,8 @@ df |>
     )
   )
 
-str_match(df[,1],"<([A-Za-z]+)>-(.)_([0-9]+)")
+df2<- str_match(df,"<([A-Za-z]+)>-(.)_([0-9]+)")
+df2[,3]
+
 ####
 
