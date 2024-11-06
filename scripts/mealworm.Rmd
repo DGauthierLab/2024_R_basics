@@ -1,0 +1,28 @@
+---
+title: "mealworms"
+output: html_document
+date: "2024-11-06"
+---
+
+```{r setup, include=FALSE}
+#install packages
+if (!require("tidyverse")) install.packages("tidyverse")
+if (!require("googlesheets4")) install.packages("googlesheets4")
+if (!require("janitor")) install.packages("janitor")
+if (!require("lubridate")) install.packages("lubridate")
+if (!require("readxl")) install.packages("readxl")
+if (!require("remotes")) install.packages("remotes")
+
+#load libraries
+library(tidyverse)
+library(googlesheets4)
+library(janitor)
+library(lubridate)
+library(readxl)
+
+#set working directory to present directory
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+getwd()
+
+knitr::opts_chunk$set(echo = TRUE)
+```
