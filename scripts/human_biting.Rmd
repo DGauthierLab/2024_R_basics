@@ -109,21 +109,21 @@ df3 |>
 contab <- function(x){
   hb_data_wrangled |>
   filter(!is.na(species_name), !is.na(new_body_site)) |>
-  filter(new_life_stage %in% {{x}}) |>
+  filter(life_stage_name %in% {{x}}) |>
   group_by(species_name,new_body_site)|>
   summarize(count = n()) |>
   pivot_wider(names_from = species_name, values_from = count, values_fill = list(count=0)) |>
   column_to_rownames(var = "new_body_site")
 }
 
-
+#
 ctable_all <- contab(life_stage_name) |>
   chisq.test()
 ctable_all
 library(corrplot)
 corrplot(ctable_all$residuals, is.cor = FALSE)
 
-ctable_adult <- contab(c("Nymph")) |>
+ctable_adult <- contab(c("Female", "Male")) |>
   chisq.test()
 ctable_adult
 library(corrplot)
@@ -131,14 +131,9 @@ corrplot(ctable_adult$residuals, is.cor = FALSE)
 
 ctable_juv <- contab(c("Nymph","Larva")) |>
   chisq.test()
-ctable_adult
+ctable_juv
 library(corrplot)
-corrplot(ctable_adult$residuals, is.cor = FALSE)
-
-chisq <- chisq.test(ctable)
-chisq
-
-
+corrplot(ctable_juv$residuals, is.cor = FALSE)
 
 contrib <- 100*chisq$residuals^2/chisq$statistic
 round(contrib, 3)

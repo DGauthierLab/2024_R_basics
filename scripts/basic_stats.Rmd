@@ -7,6 +7,8 @@ date: "2024-07-30"
 ```{r setup, include=FALSE}
 if (!require('tidyverse')) install.packages('tidyverse')
 if (!require('ggplot2')) install.packages('ggplot2')
+if (!require('pwr')) install.packages('pwr')
+if (!require('car')) install.packages('car')
 
 library(tidyverse)
 library(ggplot2)
@@ -66,7 +68,7 @@ hypergeometric <- hg_df |>
   ) +
   xlab("Successes") +
   ylab("Probability") +
-  theme_classic()
+  theme_bw()
 hypergeometric
 ```
 ```{r Normal distribution and t-test}
