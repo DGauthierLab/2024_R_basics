@@ -97,36 +97,71 @@ norm_dist <- norm_df |>
 norm_dist
 
 #generate a tibble of normally distributed tick weights (2 populations)
-tick_df <- tibble(
-  pop1 = rnorm(100,18.2,1),
-  pop2 = rnorm(100,20.2,2)
-)
+pop1=rnorm(100,18.2,1)
+pop2=rnorm(100,20.2,2)
+pop3=rnorm(100,20.4,1.5)
 
-#tick_df isn't tidy...
+tickwts <- cbind(pop1,pop2,pop3)
+View(tickwts)
+tickwts <- as_tibble(tickwts)
 
-tickwts <- tick_df |> 
+#tickwts isn't tidy
+tickwts <- as_tibble(tickwts) %>% 
   pivot_longer(
     everything(),
     names_to = "population",
     values_to = "weight_mg"
-  ) |>
-  mutate(population = case_when(population == "pop1" ~ "1",
-                                population == "pop2" ~ "2")
-         ) |>
+  ) %>%
+  mutate(pop.f = as.factor(population)) %>%
+  mutate(pop.f=case_match(pop.f, "pop1" ~ "1", "pop2" ~ "2", "pop3" ~ "3")) %>%
+  mutate(pop.f=as.numeric(pop.f)) %>%
   arrange(population)
 
-#box and scatter plots of population weights
+pop.f <- as.factor(tickwts$population)
+case_match(pop.f, "pop1" ~ "1", "pop2" ~ "2", "pop3" ~ "3")
 
-tickplot <- tickwts |>
+####make scatterplot, boxplot####
+plot2 <- tickwts %>% 
+  filter(population=="pop1" | population =="pop2") %>%
   ggplot(aes(x=population,
              y=weight_mg)) +
-  geom_point(size = 2) 
-tickplot
+  geom_point(size = 3) 
+plot2
 
-tickplot <- tickwts |>
+plot3 <- tickwts %>% 
   ggplot(aes(x=population,
              y=weight_mg)) +
   geom_boxplot()
-tickplot
+plot3
 
+####T-test and T-statistic for pop1,pop2####
+ttest <- t.test(pop2,pop3)
+ttest
+tstat <- ttest$statistic
+tstat
+
+####power calculation####
+pwr.t.test(100,0.5,0.05)
+
+####t-distribution graphic####
+plot(function(x) dt(x, df = 198), -4, 4, ylim = c(0, 0.7),
+     main = "t-distribution", yaxs = "i", xlab= "stdev")
+abline(v=1, col="darkgreen")
+abline(v=-1, col="darkgreen")
+abline(v=-2, col="green")
+abline(v=2,col="green", )
+       abline(v=tstat, col="red",lty = 4)
+
+x <- seq(-4, 4, length=100)     
+y <-  dt(x, df = 198)      
+
+stdt <- tibble(x,y)
+
+stdt |> ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  geom_vline(xintercept = 1, color = "darkblue")+
+  geom_vline(xintercept = -1, color = "darkblue")+
+  geom_vline(xintercept = 2, color = "lightblue")+
+  geom_vline(xintercept = -2, color = "lightblue")+
+  geom_vline(xintercept = tstat, color = "orange")
 ```
