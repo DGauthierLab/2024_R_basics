@@ -144,6 +144,7 @@ tstat
 pwr.t.test(100,0.5,0.05)
 
 ####t-distribution graphic####
+#base R way
 plot(function(x) dt(x, df = 198), -4, 4, ylim = c(0, 0.7),
      main = "t-distribution", yaxs = "i", xlab= "stdev")
 abline(v=1, col="darkgreen")
@@ -152,6 +153,8 @@ abline(v=-2, col="green")
 abline(v=2,col="green", )
        abline(v=tstat, col="red",lty = 4)
 
+       
+#tidyverse way
 x <- seq(-4, 4, length=100)     
 y <-  dt(x, df = 198)      
 
