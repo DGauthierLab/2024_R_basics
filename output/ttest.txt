@@ -1,0 +1,14 @@
+
+	Welch Two Sample t-test
+
+data:  pop1 and pop3
+t = -13.445, df = 159.22, p-value < 2.2e-16
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -2.611572 -1.942576
+sample estimates:
+mean of x mean of y 
+ 18.34244  20.61951 
+
+        t 
+-13.44453 
